@@ -1,395 +1,293 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Butcherist Store</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    :root {
-      --bg-color: var(--tg-theme-bg-color, #0f0f12);
-      --secondary-bg: var(--tg-theme-secondary-bg-color, #18181c);
-      --text-color: var(--tg-theme-text-color, #ffffff);
-      --hint-color: var(--tg-theme-hint-color, #a1a1aa);
-      --accent-color: var(--tg-theme-button-color, #7c3aed);
-      --card-bg: rgba(255, 255, 255, 0.04);
-      --card-border: rgba(255, 255, 255, 0.08);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Butcherist Store</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #050507;
+            --card-bg: rgba(25, 25, 35, 0.7);
+            --accent-purple: #8a2be2;
+            --neon-blue: #00d4ff;
+            --text-main: #ffffff;
+            --text-dim: #a0a0b0;
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            overflow-x: hidden;
+            background: radial-gradient(circle at top right, #1a0b2e 0%, #050507 40%);
+        }
 
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      padding: 16px;
-      padding-bottom: 95px;
-    }
+        /* Top Banner Section */
+        .hero-banner {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background: linear-gradient(90deg, rgba(138, 43, 226, 0.2), transparent);
+        }
 
-    /* Header */
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--card-border);
-    }
+        .hero-banner img.bg {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            z-index: -1;
+            mask-image: linear-gradient(to left, rgba(0,0,0,1), rgba(0,0,0,0));
+            -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1), rgba(0,0,0,0));
+        }
 
-    .brand-logo {
-      width: 46px;
-      height: 46px;
-      border-radius: 12px;
-      object-fit: cover;
-    }
+        .hero-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-    .brand-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-    }
+        .main-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
 
-    .brand-subtitle {
-      font-size: 0.75rem;
-      color: var(--hint-color);
-    }
+        .hero-text h1 { margin: 0; font-size: 24px; letter-spacing: 1px; }
+        .hero-text p { margin: 0; font-size: 13px; color: var(--text-dim); }
 
-    /* Categories Grid */
-    .section-title {
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-      color: var(--hint-color);
-    }
+        /* Categories Grid - 2 columns like the screenshot */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
 
-    .categories-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 24px;
-    }
+        .cat-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
 
-    .category-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 10px 6px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
+        .cat-card img { width: 45px; height: 45px; border-radius: 10px; }
+        .cat-card span { font-weight: 600; font-size: 15px; }
+        .cat-card i.fa-chevron-right { 
+            position: absolute; right: 15px; font-size: 12px; color: var(--accent-purple);
+        }
 
-    .category-card.active {
-      border-color: var(--accent-color);
-      background: rgba(124, 58, 237, 0.15);
-    }
+        /* Product List */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 0 5px;
+        }
 
-    .category-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      object-fit: cover;
-      margin-bottom: 6px;
-    }
+        .section-header h2 { font-size: 18px; margin: 0; display: flex; align-items: center; gap: 8px; }
+        .section-header h2::before { content: ''; width: 4px; height: 18px; background: var(--accent-purple); border-radius: 2px; }
+        .view-all { color: var(--accent-purple); font-size: 13px; font-weight: bold; }
 
-    .category-name {
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
+        .product-item {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
 
-    /* Products List */
-    .products-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+        .prod-meta { display: flex; align-items: center; gap: 15px; }
+        .prod-icon { width: 45px; height: 45px; border-radius: 12px; }
+        
+        .prod-name { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+        .prod-price { color: var(--accent-purple); font-weight: 800; font-size: 17px; }
 
-    .product-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 12px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: border-color 0.15s ease, background 0.15s ease;
-    }
+        .buy-button {
+            background: linear-gradient(45deg, #7022c4, #8a2be2);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+        }
 
-    .product-card.selected {
-      border-color: var(--accent-color);
-      background: rgba(124, 58, 237, 0.08);
-    }
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 15, 0.95);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+        }
 
-    .product-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+        .nav-link { 
+            display: flex; flex-direction: column; align-items: center; 
+            color: var(--text-dim); text-decoration: none; font-size: 11px; gap: 5px;
+        }
+        .nav-link.active { color: var(--accent-purple); }
+        .nav-link i { font-size: 20px; }
 
-    .product-img {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      object-fit: cover;
-    }
-
-    .product-details {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .product-title {
-      font-size: 0.88rem;
-      font-weight: 600;
-    }
-
-    .product-desc {
-      font-size: 0.72rem;
-      color: var(--hint-color);
-    }
-
-    .product-price {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #10b981;
-    }
-
-    .price-pending {
-      font-size: 0.72rem;
-      color: var(--hint-color);
-      background: rgba(255, 255, 255, 0.06);
-      padding: 4px 8px;
-      border-radius: 6px;
-    }
-
-    /* Navigation Footer */
-    .footer-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--secondary-bg);
-      border-top: 1px solid var(--card-border);
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      backdrop-filter: blur(10px);
-    }
-
-    .cart-summary {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .cart-label {
-      font-size: 0.72rem;
-      color: var(--hint-color);
-    }
-
-    .cart-total {
-      font-size: 0.9rem;
-      font-weight: 700;
-      max-width: 170px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .btn-checkout {
-      background: var(--accent-color);
-      color: #ffffff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-  </style>
+    </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <div class="header">
-    <img src="LoGo G2G Finally.png" alt="Butcherist Logo" class="brand-logo" onerror="this.src='https://via.placeholder.com/46'">
-    <div>
-      <div class="brand-title">Butcherist</div>
-      <div class="brand-subtitle">فروشگاه تخصصی اشتراک و کد دیجیتال</div>
-    </div>
-  </div>
-
-  <!-- Categories -->
-  <div class="section-title">دسته‌بندی‌ها</div>
-  <div class="categories-grid">
-    <div class="category-card active" onclick="selectCategory('gearup', event)">
-      <img src="GearUpBoosterIcon.jpg" alt="GearUP" class="category-icon" onerror="this.src='https://via.placeholder.com/34'">
-      <div class="category-name">GearUP</div>
-    </div>
-    <div class="category-card" onclick="selectCategory('steam', event)">
-      <img src="SteamIcon.jpg" alt="Steam" class="category-icon" onerror="this.src='https://via.placeholder.com/34'">
-      <div class="category-name">Steam</div>
-    </div>
-    <div class="category-card" onclick="selectCategory('exitlag', event)">
-      <img src="ExitlagIcon.jpg" alt="ExitLag" class="category-icon" onerror="this.src='https://via.placeholder.com/34'">
-      <div class="category-name">ExitLag</div>
-    </div>
-    <div class="category-card" onclick="selectCategory('spotify', event)">
-      <img src="SpotifyIcon.jpg" alt="Spotify" class="category-icon" onerror="this.src='https://via.placeholder.com/34'">
-      <div class="category-name">Spotify</div>
-    </div>
-    <div class="category-card" onclick="selectCategory('youtube', event)">
-      <img src="YoutubeIcon.jpg" alt="YouTube" class="category-icon" onerror="this.src='https://via.placeholder.com/34'">
-      <div class="category-name">YouTube</div>
-    </div>
-  </div>
-
-  <!-- Products Container -->
-  <div class="section-title" id="products-header">محصولات GearUP Booster</div>
-  <div class="products-container" id="products-list"></div>
-
-  <!-- Footer -->
-  <div class="footer-bar">
-    <div class="cart-summary">
-      <span class="cart-label">محصول انتخابی:</span>
-      <span class="cart-total" id="selected-product-name">هیچ‌کدام</span>
-    </div>
-    <button class="btn-checkout" onclick="submitOrder()">ثبت سفارش</button>
-  </div>
-
-  <script>
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.ready();
-      tg.expand();
-    }
-
-    // پایگاه داده محصولات مطابق با مشخصات دقیق کاربر
-    const productsData = {
-      gearup: [
-        { id: 'pc_1m', title: 'GearUP PC (Global)', desc: 'اشتراک ۱ ماهه', price: 4.00, icon: 'GearUpBoosterIcon.jpg' },
-        { id: 'pc_3m', title: 'GearUP PC (Global)', desc: 'اشتراک ۳ ماهه', price: 11.50, icon: 'GearUpBoosterIcon.jpg' },
-        { id: 'pc_12m', title: 'GearUP PC (Global)', desc: 'اشتراک ۱۲ ماهه', price: 36.00, icon: 'GearUpBoosterIcon.jpg' },
-        { id: 'mobile_global_1m', title: 'GearUP Mobile (Global)', desc: 'اشتراک ۱ ماهه', price: 4.80, icon: 'GearUpBoosterIcon.jpg' },
-        { id: 'mobile_iran_1m', title: 'GearUP Mobile (Iran)', desc: 'اشتراک ۱ ماهه', price: 1.70, icon: 'GearUpBoosterIcon.jpg' }
-      ],
-      steam: [
-        { id: 'st_5', title: 'Steam Gift Card $5', desc: 'گیفت کارت ۵ دلاری', price: null, icon: 'SteamIcon.jpg' },
-        { id: 'st_10', title: 'Steam Gift Card $10', desc: 'گیفت کارت ۱۰ دلاری', price: null, icon: 'SteamIcon.jpg' }
-      ],
-      exitlag: [
-        { id: 'ex_1m', title: 'ExitLag 1 Month', desc: 'اشتراک ۱ ماهه سیستم', price: null, icon: 'ExitlagIcon.jpg' }
-      ],
-      spotify: [
-        { id: 'sp_1m', title: 'Spotify Premium', desc: 'اشتراک پرمیوم ۱ ماهه', price: null, icon: 'SpotifyIcon.jpg' }
-      ],
-      youtube: [
-        { id: 'yt_1m', title: 'YouTube Premium', desc: 'اشتراک پرمیوم ۱ ماهه', price: null, icon: 'YoutubeIcon.jpg' }
-      ]
-    };
-
-    let currentSelectedProduct = null;
-
-    function renderProducts(categoryKey) {
-      const container = document.getElementById('products-list');
-      container.innerHTML = '';
-      const list = productsData[categoryKey] || [];
-
-      list.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        if (currentSelectedProduct && currentSelectedProduct.id === item.id) {
-          card.classList.add('selected');
-        }
-
-        const priceDisplay = item.price !== null 
-          ? `<span class="product-price">$${item.price.toFixed(2)}</span>`
-          : `<span class="price-pending">استعلام قیمت</span>`;
-
-        card.innerHTML = `
-          <div class="product-info">
-            <img src="${item.icon}" class="product-img" onerror="this.src='https://via.placeholder.com/40'">
-            <div class="product-details">
-              <div class="product-title">${item.title}</div>
-              <div class="product-desc">${item.desc}</div>
+    <!-- Hero Section -->
+    <div class="hero-banner">
+        <!-- جایگزین کردن عکس کاراکتر بنفش -->
+        <img src="Banner.jpg" class="bg" onerror="this.style.display='none'">
+        <div class="hero-content">
+            <img src="LoGo G2G Finally.png" class="main-logo">
+            <div class="hero-text">
+                <h1>Butcherist</h1>
+                <p>Game Booster & Digital Store</p>
             </div>
-          </div>
-          <div>${priceDisplay}</div>
-        `;
+        </div>
+    </div>
 
-        card.onclick = () => {
-          if (item.price === null) {
-            if (tg && tg.showAlert) {
-              tg.showAlert('قیمت این محصول به‌زودی وارد خواهد شد.');
-            } else {
-              alert('قیمت این محصول به‌زودی وارد خواهد شد.');
-            }
-            return;
-          }
-          currentSelectedProduct = item;
-          document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
-          card.classList.add('selected');
-          document.getElementById('selected-product-name').innerText = `${item.title} (${item.desc})`;
-        };
+    <!-- Categories Grid -->
+    <div class="categories-grid">
+        <div class="cat-card">
+            <img src="GearUpBoosterIcon.jpg">
+            <span>GearUP Booster</span>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="cat-card">
+            <img src="SteamIcon.jpg">
+            <span>Steam</span>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="cat-card">
+            <img src="ExitlagIcon.jpg">
+            <span>ExitLag</span>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="cat-card">
+            <img src="SpotifyIcon.jpg">
+            <span>Spotify</span>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+    </div>
 
-        container.appendChild(card);
-      });
-    }
+    <!-- Product List -->
+    <div class="section-header">
+        <h2>GearUP Booster</h2>
+        <span class="view-all">View All <i class="fas fa-chevron-right"></i></span>
+    </div>
 
-    function selectCategory(catKey, evt) {
-      document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
-      if (evt && evt.currentTarget) {
-        evt.currentTarget.classList.add('active');
-      }
+    <div id="product-container">
+        <!-- لیست ۵ محصول GearUP -->
+        <div class="product-item">
+            <div class="prod-meta">
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon">
+                <div>
+                    <div class="prod-name">GearUP PC Global 1M</div>
+                    <div class="prod-price">$4.00</div>
+                </div>
+            </div>
+            <button class="buy-button" onclick="sendOrder('pc_1m', 4.00)"><i class="fas fa-shopping-cart"></i> Buy</button>
+        </div>
 
-      const titles = {
-        gearup: 'محصولات GearUP Booster',
-        steam: 'گیفت کارت‌های Steam',
-        exitlag: 'اشتراک‌های ExitLag',
-        spotify: 'اشتراک‌های Spotify',
-        youtube: 'اشتراک‌های YouTube'
-      };
-      document.getElementById('products-header').innerText = titles[catKey] || 'محصولات';
+        <div class="product-item">
+            <div class="prod-meta">
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon">
+                <div>
+                    <div class="prod-name">GearUP PC Global 3M</div>
+                    <div class="prod-price">$11.50</div>
+                </div>
+            </div>
+            <button class="buy-button" onclick="sendOrder('pc_3m', 11.50)"><i class="fas fa-shopping-cart"></i> Buy</button>
+        </div>
 
-      renderProducts(catKey);
-    }
+        <div class="product-item">
+            <div class="prod-meta">
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon">
+                <div>
+                    <div class="prod-name">GearUP PC Global 12M</div>
+                    <div class="prod-price">$36.00</div>
+                </div>
+            </div>
+            <button class="buy-button" onclick="sendOrder('pc_12m', 36.00)"><i class="fas fa-shopping-cart"></i> Buy</button>
+        </div>
 
-    function submitOrder() {
-      if (!currentSelectedProduct) {
-        if (tg && tg.showAlert) {
-          tg.showAlert('لطفاً ابتدا یک محصول را انتخاب کنید.');
-        } else {
-          alert('لطفاً ابتدا یک محصول را انتخاب کنید.');
+        <div class="product-item">
+            <div class="prod-meta">
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon">
+                <div>
+                    <div class="prod-name">GearUP Mobile Global 1M</div>
+                    <div class="prod-price">$4.80</div>
+                </div>
+            </div>
+            <button class="buy-button" onclick="sendOrder('mob_gl_1m', 4.80)"><i class="fas fa-shopping-cart"></i> Buy</button>
+        </div>
+
+        <div class="product-item">
+            <div class="prod-meta">
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon">
+                <div>
+                    <div class="prod-name">GearUP Mobile Iran 1M</div>
+                    <div class="prod-price">$1.70</div>
+                </div>
+            </div>
+            <button class="buy-button" onclick="sendOrder('mob_ir_1m', 1.70)"><i class="fas fa-shopping-cart"></i> Buy</button>
+        </div>
+    </div>
+
+    <div style="height: 80px;"></div>
+
+    <!-- Navigation -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-link active"><i class="fas fa-home"></i>Home</a>
+        <a href="#" class="nav-link"><i class="fas fa-th-large"></i>Orders</a>
+        <a href="#" class="nav-link"><i class="fas fa-headset"></i>Support</a>
+        <a href="#" class="nav-link"><i class="fas fa-user"></i>Profile</a>
+    </div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.headerColor = '#050507';
+
+        function sendOrder(id, price) {
+            const data = {
+                action: 'buy',
+                product_id: id,
+                amount: price
+            };
+            tg.sendData(JSON.stringify(data));
         }
-        return;
-      }
-
-      const payload = {
-        product_id: currentSelectedProduct.id,
-        title: currentSelectedProduct.title,
-        desc: currentSelectedProduct.desc,
-        price: currentSelectedProduct.price,
-        currency: '$',
-        timestamp: new Date().toISOString()
-      };
-
-      if (tg && tg.sendData) {
-        tg.sendData(JSON.stringify(payload));
-      } else {
-        alert('سفارش انتخاب شد: ' + currentSelectedProduct.title);
-      }
-    }
-
-    // بارگذاری اولیه
-    renderProducts('gearup');
-  </script>
+    </script>
 </body>
 </html>
