@@ -481,11 +481,16 @@
         }
 
         function openSupport(event) {
-            if (tg?.openTelegramLink) {
-                event.preventDefault();
-                tg.openTelegramLink('https://t.me/Pooriya_Tgh');
-            }
-        }
+      <a
+    href="https://t.me/Pooriya_Tgh"
+    class="nav-link"
+    onclick="openSupport(event)"
+    aria-label="گفت‌وگو با @Pooriya_Tgh در تلگرام"
+>
+    <i class="fas fa-headset"></i>
+    <span>@Pooriya_Tgh</span>
+</a>
+
 
         async function loadProfile() {
             const ordersElement = document.getElementById('profile-orders');
