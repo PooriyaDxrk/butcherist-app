@@ -7,195 +7,389 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg-color: #0f0f12;
-      --secondary-bg: #18181c;
-      --text-color: #ffffff;
-      --hint-color: #a1a1aa;
-      --accent-color: #7c3aed;
+      --bg-color: var(--tg-theme-bg-color, #0f0f12);
+      --secondary-bg: var(--tg-theme-secondary-bg-color, #18181c);
+      --text-color: var(--tg-theme-text-color, #ffffff);
+      --hint-color: var(--tg-theme-hint-color, #a1a1aa);
+      --accent-color: var(--tg-theme-button-color, #7c3aed);
       --card-bg: rgba(255, 255, 255, 0.04);
       --card-border: rgba(255, 255, 255, 0.08);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background-color: var(--bg-color); color: var(--text-color); padding: 16px; padding-bottom: 100px; line-height: 1.5; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 16px;
+      padding-bottom: 95px;
+    }
 
     /* Header */
-    .header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--card-border); }
-    .brand-logo { width: 48px; height: 48px; border-radius: 12px; object-fit: cover; }
-    .brand-title { font-size: 1.2rem; font-weight: bold; }
-    .brand-subtitle { font-size: 0.75rem; color: var(--hint-color); }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+    }
 
-    /* Categories Horizontal Scroll or Grid */
-    .section-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 12px; color: var(--hint-color); display: block; }
-    .categories-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 25px; }
-    
+    .brand-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .brand-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .brand-subtitle {
+      font-size: 0.75rem;
+      color: var(--hint-color);
+    }
+
+    /* Categories Grid */
+    .section-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--hint-color);
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
     .category-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 10px 5px;
+      padding: 10px 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      text-align: center;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
-    .category-card.active { border-color: var(--accent-color); background: rgba(124, 58, 237, 0.15); }
-    .category-icon { width: 32px; height: 32px; margin-bottom: 8px; border-radius: 6px; object-fit: contain; }
-    .category-name { font-size: 0.7rem; font-weight: 600; text-align: center; }
 
-    /* Product List */
-    .products-container { display: flex; flex-direction: column; gap: 10px; }
+    .category-card.active {
+      border-color: var(--accent-color);
+      background: rgba(124, 58, 237, 0.15);
+    }
+
+    .category-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-bottom: 6px;
+    }
+
+    .category-name {
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Products List */
+    .products-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     .product-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 12px;
+      padding: 12px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
     }
-    .product-card:active { background: rgba(255, 255, 255, 0.08); }
-    .product-info { display: flex; align-items: center; gap: 12px; }
-    .product-thumb { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; }
-    .product-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
-    .product-desc { font-size: 0.7rem; color: var(--hint-color); }
-    .product-price { font-size: 0.9rem; font-weight: 700; color: #10b981; }
-    .price-tag { background: rgba(16, 185, 129, 0.1); padding: 4px 8px; border-radius: 6px; }
-    .no-price { color: var(--hint-color); font-size: 0.7rem; }
 
-    /* Bottom Bar */
-    .footer { position: fixed; bottom: 0; left: 0; right: 0; background: var(--secondary-bg); padding: 15px; border-top: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; }
-    .btn-buy { background: var(--accent-color); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-    .selected-info { display: flex; flex-direction: column; }
-    .selected-label { font-size: 0.7rem; color: var(--hint-color); }
-    .selected-name { font-size: 0.9rem; font-weight: bold; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .product-card.selected {
+      border-color: var(--accent-color);
+      background: rgba(124, 58, 237, 0.08);
+    }
+
+    .product-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .product-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .product-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .product-desc {
+      font-size: 0.72rem;
+      color: var(--hint-color);
+    }
+
+    .product-price {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #10b981;
+    }
+
+    .price-pending {
+      font-size: 0.72rem;
+      color: var(--hint-color);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    /* Navigation Footer */
+    .footer-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--secondary-bg);
+      border-top: 1px solid var(--card-border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(10px);
+    }
+
+    .cart-summary {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-label {
+      font-size: 0.72rem;
+      color: var(--hint-color);
+    }
+
+    .cart-total {
+      font-size: 0.9rem;
+      font-weight: 700;
+      max-width: 170px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-checkout {
+      background: var(--accent-color);
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
+  <!-- Header -->
   <div class="header">
-    <img src="LoGo G2G Finally.png" class="brand-logo" alt="Logo">
+    <img src="LoGo G2G Finally.png" alt="Butcherist Logo" class="brand-logo" onerror="this.src='https://via.placeholder.com/46'">
     <div>
       <div class="brand-title">Butcherist</div>
-      <div class="brand-subtitle">مرجع اشتراک‌های گیمینگ و کدهای دیجیتال</div>
+      <div class="brand-subtitle">فروشگاه تخصصی اشتراک و کد دیجیتال</div>
     </div>
   </div>
 
-  <span class="section-title">انتخاب دسته‌بندی</span>
+  <!-- Categories -->
+  <div class="section-title">دسته‌بندی‌ها</div>
   <div class="categories-grid">
-    <div class="category-card active" onclick="selectCategory('gearup', this)">
-      <img src="GearUpBoosterIcon.jpg" class="category-icon">
+    <div class="category-card active" onclick="selectCategory('gearup', event)">
+      <img src="GearUpBoosterIcon.jpg" alt="GearUP" class="category-icon" onerror="this.src='https://via.placeholder.com/34'">
       <div class="category-name">GearUP</div>
     </div>
-    <div class="category-card" onclick="selectCategory('steam', this)">
-      <img src="SteamIcon.jpg" class="category-icon">
+    <div class="category-card" onclick="selectCategory('steam', event)">
+      <img src="SteamIcon.jpg" alt="Steam" class="category-icon" onerror="this.src='https://via.placeholder.com/34'">
       <div class="category-name">Steam</div>
     </div>
-    <div class="category-card" onclick="selectCategory('exitlag', this)">
-      <img src="ExitlagIcon.jpg" class="category-icon">
+    <div class="category-card" onclick="selectCategory('exitlag', event)">
+      <img src="ExitlagIcon.jpg" alt="ExitLag" class="category-icon" onerror="this.src='https://via.placeholder.com/34'">
       <div class="category-name">ExitLag</div>
     </div>
-    <div class="category-card" onclick="selectCategory('spotify', this)">
-      <img src="SpotifyIcon.jpg" class="category-icon">
+    <div class="category-card" onclick="selectCategory('spotify', event)">
+      <img src="SpotifyIcon.jpg" alt="Spotify" class="category-icon" onerror="this.src='https://via.placeholder.com/34'">
       <div class="category-name">Spotify</div>
     </div>
-    <div class="category-card" onclick="selectCategory('youtube', this)">
-      <img src="YoutubeIcon.jpg" class="category-icon">
+    <div class="category-card" onclick="selectCategory('youtube', event)">
+      <img src="YoutubeIcon.jpg" alt="YouTube" class="category-icon" onerror="this.src='https://via.placeholder.com/34'">
       <div class="category-name">YouTube</div>
     </div>
   </div>
 
-  <span class="section-title" id="cat-title">محصولات GearUP</span>
-  <div class="products-container" id="product-list">
-    <!-- محصولات اینجا نمایش داده می‌شوند -->
-  </div>
+  <!-- Products Container -->
+  <div class="section-title" id="products-header">محصولات GearUP Booster</div>
+  <div class="products-container" id="products-list"></div>
 
-  <div class="footer">
-    <div class="selected-info">
-      <span class="selected-label">آیتم انتخابی:</span>
-      <span class="selected-name" id="selected-name">چیزی انتخاب نشده</span>
+  <!-- Footer -->
+  <div class="footer-bar">
+    <div class="cart-summary">
+      <span class="cart-label">محصول انتخابی:</span>
+      <span class="cart-total" id="selected-product-name">هیچ‌کدام</span>
     </div>
-    <button class="btn-buy" onclick="sendOrder()">ثبت سفارش</button>
+    <button class="btn-checkout" onclick="submitOrder()">ثبت سفارش</button>
   </div>
 
   <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
 
-    const data = {
+    // پایگاه داده محصولات مطابق با مشخصات دقیق کاربر
+    const productsData = {
       gearup: [
-        { id: 'g1', title: 'GearUP PC 1 Month', desc: 'اشتراک یک ماهه', price: 3.47, img: 'GearUpBoosterIcon.jpg' },
-        { id: 'g3', title: 'GearUP PC 3 Months', desc: 'اشتراک سه ماهه', price: 9.99, img: 'GearUpBoosterIcon.jpg' },
-        { id: 'g12', title: 'GearUP PC 12 Months', desc: 'اشتراک یک ساله', price: 29.99, img: 'GearUpBoosterIcon.jpg' }
+        { id: 'pc_1m', title: 'GearUP PC (Global)', desc: 'اشتراک ۱ ماهه', price: 4.00, icon: 'GearUpBoosterIcon.jpg' },
+        { id: 'pc_3m', title: 'GearUP PC (Global)', desc: 'اشتراک ۳ ماهه', price: 11.50, icon: 'GearUpBoosterIcon.jpg' },
+        { id: 'pc_12m', title: 'GearUP PC (Global)', desc: 'اشتراک ۱۲ ماهه', price: 36.00, icon: 'GearUpBoosterIcon.jpg' },
+        { id: 'mobile_global_1m', title: 'GearUP Mobile (Global)', desc: 'اشتراک ۱ ماهه', price: 4.80, icon: 'GearUpBoosterIcon.jpg' },
+        { id: 'mobile_iran_1m', title: 'GearUP Mobile (Iran)', desc: 'اشتراک ۱ ماهه', price: 1.70, icon: 'GearUpBoosterIcon.jpg' }
       ],
       steam: [
-        { id: 's5', title: 'Steam $5', desc: 'گیفت کارت استیم', price: null, img: 'SteamIcon.jpg' },
-        { id: 's10', title: 'Steam $10', desc: 'گیفت کارت استیم', price: null, img: 'SteamIcon.jpg' }
+        { id: 'st_5', title: 'Steam Gift Card $5', desc: 'گیفت کارت ۵ دلاری', price: null, icon: 'SteamIcon.jpg' },
+        { id: 'st_10', title: 'Steam Gift Card $10', desc: 'گیفت کارت ۱۰ دلاری', price: null, icon: 'SteamIcon.jpg' }
       ],
       exitlag: [
-        { id: 'ex1', title: 'ExitLag 1 Month', desc: 'کاهش پینگ حرفه‌ای', price: null, img: 'ExitlagIcon.jpg' }
+        { id: 'ex_1m', title: 'ExitLag 1 Month', desc: 'اشتراک ۱ ماهه سیستم', price: null, icon: 'ExitlagIcon.jpg' }
       ],
       spotify: [
-        { id: 'sp1', title: 'Spotify Premium', desc: 'اشتراک شخصی', price: null, img: 'SpotifyIcon.jpg' }
+        { id: 'sp_1m', title: 'Spotify Premium', desc: 'اشتراک پرمیوم ۱ ماهه', price: null, icon: 'SpotifyIcon.jpg' }
       ],
       youtube: [
-        { id: 'yt1', title: 'YouTube Premium', desc: 'بدون تبلیغات', price: null, img: 'YoutubeIcon.jpg' }
+        { id: 'yt_1m', title: 'YouTube Premium', desc: 'اشتراک پرمیوم ۱ ماهه', price: null, icon: 'YoutubeIcon.jpg' }
       ]
     };
 
-    let selectedItem = null;
+    let currentSelectedProduct = null;
 
-    function selectCategory(cat, el) {
-      document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
-      el.classList.add('active');
-      document.getElementById('cat-title').innerText = 'محصولات ' + el.querySelector('.category-name').innerText;
-      render(cat);
-    }
-
-    function render(cat) {
-      const container = document.getElementById('product-list');
+    function renderProducts(categoryKey) {
+      const container = document.getElementById('products-list');
       container.innerHTML = '';
-      data[cat].forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'product-card';
-        div.onclick = () => {
-          if(item.price === null) {
-            tg.showAlert('قیمت این محصول هنوز وارد نشده است.');
-            return;
-          }
-          selectedItem = item;
-          document.getElementById('selected-name').innerText = item.title;
-        };
-        
-        const priceHTML = item.price 
-          ? `<div class="price-tag"><span class="product-price">$${item.price}</span></div>` 
-          : `<span class="no-price">استعلام قیمت</span>`;
+      const list = productsData[categoryKey] || [];
 
-        div.innerHTML = `
+      list.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        if (currentSelectedProduct && currentSelectedProduct.id === item.id) {
+          card.classList.add('selected');
+        }
+
+        const priceDisplay = item.price !== null 
+          ? `<span class="product-price">$${item.price.toFixed(2)}</span>`
+          : `<span class="price-pending">استعلام قیمت</span>`;
+
+        card.innerHTML = `
           <div class="product-info">
-            <img src="${item.img}" class="product-thumb">
-            <div>
+            <img src="${item.icon}" class="product-img" onerror="this.src='https://via.placeholder.com/40'">
+            <div class="product-details">
               <div class="product-title">${item.title}</div>
               <div class="product-desc">${item.desc}</div>
             </div>
           </div>
-          ${priceHTML}
+          <div>${priceDisplay}</div>
         `;
-        container.appendChild(div);
+
+        card.onclick = () => {
+          if (item.price === null) {
+            if (tg && tg.showAlert) {
+              tg.showAlert('قیمت این محصول به‌زودی وارد خواهد شد.');
+            } else {
+              alert('قیمت این محصول به‌زودی وارد خواهد شد.');
+            }
+            return;
+          }
+          currentSelectedProduct = item;
+          document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          document.getElementById('selected-product-name').innerText = `${item.title} (${item.desc})`;
+        };
+
+        container.appendChild(card);
       });
     }
 
-    function sendOrder() {
-      if(!selectedItem) {
-        tg.showAlert('لطفاً ابتدا یک محصول را انتخاب کنید.');
-        return;
+    function selectCategory(catKey, evt) {
+      document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
+      if (evt && evt.currentTarget) {
+        evt.currentTarget.classList.add('active');
       }
-      tg.sendData(JSON.stringify(selectedItem));
+
+      const titles = {
+        gearup: 'محصولات GearUP Booster',
+        steam: 'گیفت کارت‌های Steam',
+        exitlag: 'اشتراک‌های ExitLag',
+        spotify: 'اشتراک‌های Spotify',
+        youtube: 'اشتراک‌های YouTube'
+      };
+      document.getElementById('products-header').innerText = titles[catKey] || 'محصولات';
+
+      renderProducts(catKey);
     }
 
-    // لود اولیه
-    render('gearup');
+    function submitOrder() {
+      if (!currentSelectedProduct) {
+        if (tg && tg.showAlert) {
+          tg.showAlert('لطفاً ابتدا یک محصول را انتخاب کنید.');
+        } else {
+          alert('لطفاً ابتدا یک محصول را انتخاب کنید.');
+        }
+        return;
+      }
+
+      const payload = {
+        product_id: currentSelectedProduct.id,
+        title: currentSelectedProduct.title,
+        desc: currentSelectedProduct.desc,
+        price: currentSelectedProduct.price,
+        currency: '$',
+        timestamp: new Date().toISOString()
+      };
+
+      if (tg && tg.sendData) {
+        tg.sendData(JSON.stringify(payload));
+      } else {
+        alert('سفارش انتخاب شد: ' + currentSelectedProduct.title);
+      }
+    }
+
+    // بارگذاری اولیه
+    renderProducts('gearup');
   </script>
 </body>
 </html>
