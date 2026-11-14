@@ -5,93 +5,152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Butcherist Store</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-dark: #050507;
-            --card-bg: rgba(25, 25, 35, 0.7);
-            --accent-purple: #8a2be2;
-            --neon-blue: #00d4ff;
+            --bg-dark: #07060b;
+            --card-bg: rgba(22, 19, 35, 0.75);
+            --accent-purple: #8b5cf6;
+            --accent-glow: #6d28d9;
             --text-main: #ffffff;
-            --text-dim: #a0a0b0;
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-dim: #9ca3af;
+            --glass-border: rgba(139, 92, 246, 0.18);
+        }
+
+        * {
+            box-sizing: border-border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
             margin: 0;
-            padding: 15px;
+            padding: 16px;
+            padding-bottom: 90px;
             overflow-x: hidden;
-            background: radial-gradient(circle at top right, #1a0b2e 0%, #050507 40%);
+            background-image: 
+                radial-gradient(circle at 90% 10%, rgba(109, 40, 217, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 10% 90%, rgba(139, 92, 246, 0.15) 0%, transparent 40%);
+            background-attachment: fixed;
         }
 
-        /* Top Banner Section */
+        /* Generated Cyber Neon Banner (No image needed) */
         .hero-banner {
             position: relative;
             width: 100%;
-            height: 140px;
+            height: 120px;
             border-radius: 20px;
             overflow: hidden;
-            margin-bottom: 20px;
-            border: 1px solid var(--glass-border);
+            margin-bottom: 22px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
             display: flex;
             align-items: center;
-            padding: 20px;
+            padding: 0 20px;
             box-sizing: border-box;
-            background: linear-gradient(90deg, rgba(138, 43, 226, 0.2), transparent);
+            background: linear-gradient(135deg, rgba(30, 20, 50, 0.9) 0%, rgba(15, 10, 25, 0.95) 100%);
+            box-shadow: 0 8px 32px 0 rgba(109, 40, 217, 0.2);
         }
 
-        .hero-banner img.bg {
+        /* Background glow effect for Banner */
+        .hero-banner::after {
+            content: '';
             position: absolute;
-            right: 0;
-            top: 0;
-            height: 100%;
-            z-index: -1;
-            mask-image: linear-gradient(to left, rgba(0,0,0,1), rgba(0,0,0,0));
-            -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1), rgba(0,0,0,0));
+            right: -20px;
+            top: -20px;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
         }
 
         .hero-content {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 16px;
+            z-index: 2;
         }
 
         .main-logo {
-            width: 60px;
-            height: 60px;
-            object-fit: contain;
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
 
-        .hero-text h1 { margin: 0; font-size: 24px; letter-spacing: 1px; }
-        .hero-text p { margin: 0; font-size: 13px; color: var(--text-dim); }
+        .hero-text h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            background: linear-gradient(to right, #ffffff, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-        /* Categories Grid - 2 columns like the screenshot */
+        .hero-text p {
+            margin: 3px 0 0 0;
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        /* Categories Grid */
         .categories-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-bottom: 25px;
+            margin-bottom: 24px;
         }
 
         .cat-card {
             background: var(--card-bg);
             border-radius: 18px;
-            padding: 15px;
+            padding: 14px;
             display: flex;
             align-items: center;
             gap: 12px;
             border: 1px solid var(--glass-border);
             position: relative;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.15s ease;
         }
 
-        .cat-card img { width: 45px; height: 45px; border-radius: 10px; }
-        .cat-card span { font-weight: 600; font-size: 15px; }
-        .cat-card i.fa-chevron-right { 
-            position: absolute; right: 15px; font-size: 12px; color: var(--accent-purple);
+        .cat-card:active {
+            transform: scale(0.98);
+            border-color: var(--accent-purple);
+        }
+
+        .cat-card img {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .cat-card span {
+            font-weight: 600;
+            font-size: 14px;
+            color: #ffffff;
+        }
+
+        .cat-card i.fa-chevron-right {
+            position: absolute;
+            right: 14px;
+            font-size: 12px;
+            color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.15);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Product List */
@@ -99,77 +158,139 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding: 0 5px;
+            margin-bottom: 14px;
+            padding: 0 4px;
         }
 
-        .section-header h2 { font-size: 18px; margin: 0; display: flex; align-items: center; gap: 8px; }
-        .section-header h2::before { content: ''; width: 4px; height: 18px; background: var(--accent-purple); border-radius: 2px; }
-        .view-all { color: var(--accent-purple); font-size: 13px; font-weight: bold; }
+        .section-header h2 {
+            font-size: 17px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+
+        .section-header h2::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            background: var(--accent-purple);
+            border-radius: 4px;
+            box-shadow: 0 0 10px var(--accent-purple);
+        }
+
+        .view-all {
+            color: #c084fc;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
 
         .product-item {
             background: var(--card-bg);
             border-radius: 18px;
-            padding: 12px 15px;
+            padding: 12px 14px;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
 
-        .prod-meta { display: flex; align-items: center; gap: 15px; }
-        .prod-icon { width: 45px; height: 45px; border-radius: 12px; }
-        
-        .prod-name { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
-        .prod-price { color: var(--accent-purple); font-weight: 800; font-size: 17px; }
-
-        .buy-button {
-            background: linear-gradient(45deg, #7022c4, #8a2be2);
-            color: white;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 12px;
-            font-weight: bold;
+        .prod-meta {
             display: flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+            gap: 14px;
         }
 
-        /* Bottom Nav */
+        .prod-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .prod-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #f3f4f6;
+        }
+
+        .prod-price {
+            color: #c084fc;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .buy-button {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(109, 40, 217, 0.4);
+            transition: transform 0.1s ease;
+        }
+
+        .buy-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Navigation Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(10, 10, 15, 0.95);
+            background: rgba(10, 8, 16, 0.92);
             display: flex;
             justify-content: space-around;
-            padding: 12px 0;
-            border-top: 1px solid var(--glass-border);
+            padding: 10px 0 14px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 100;
         }
 
-        .nav-link { 
-            display: flex; flex-direction: column; align-items: center; 
-            color: var(--text-dim); text-decoration: none; font-size: 11px; gap: 5px;
+        .nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 11px;
+            gap: 4px;
+            font-weight: 500;
         }
-        .nav-link.active { color: var(--accent-purple); }
-        .nav-link i { font-size: 20px; }
 
+        .nav-link.active {
+            color: #c084fc;
+        }
+
+        .nav-link i {
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Hero Section -->
+    <!-- Cyber Neon Header Banner -->
     <div class="hero-banner">
-        <!-- جایگزین کردن عکس کاراکتر بنفش -->
-        <img src="Banner.jpg" class="bg" onerror="this.style.display='none'">
         <div class="hero-content">
-            <img src="LoGo G2G Finally.png" class="main-logo">
+            <img src="LoGo G2G Finally.png" class="main-logo" onerror="this.src='https://via.placeholder.com/54/8b5cf6/ffffff?text=B'">
             <div class="hero-text">
                 <h1>Butcherist</h1>
                 <p>Game Booster & Digital Store</p>
@@ -177,25 +298,25 @@
         </div>
     </div>
 
-    <!-- Categories Grid -->
+    <!-- Categories Grid (2 Columns like design) -->
     <div class="categories-grid">
         <div class="cat-card">
-            <img src="GearUpBoosterIcon.jpg">
+            <img src="GearUpBoosterIcon.jpg" onerror="this.src='https://via.placeholder.com/42/8b5cf6/ffffff?text=G'">
             <span>GearUP Booster</span>
             <i class="fas fa-chevron-right"></i>
         </div>
         <div class="cat-card">
-            <img src="SteamIcon.jpg">
+            <img src="SteamIcon.jpg" onerror="this.src='https://via.placeholder.com/42/8b5cf6/ffffff?text=S'">
             <span>Steam</span>
             <i class="fas fa-chevron-right"></i>
         </div>
         <div class="cat-card">
-            <img src="ExitlagIcon.jpg">
+            <img src="ExitlagIcon.jpg" onerror="this.src='https://via.placeholder.com/42/8b5cf6/ffffff?text=E'">
             <span>ExitLag</span>
             <i class="fas fa-chevron-right"></i>
         </div>
         <div class="cat-card">
-            <img src="SpotifyIcon.jpg">
+            <img src="SpotifyIcon.jpg" onerror="this.src='https://via.placeholder.com/42/8b5cf6/ffffff?text=SP'">
             <span>Spotify</span>
             <i class="fas fa-chevron-right"></i>
         </div>
@@ -208,10 +329,10 @@
     </div>
 
     <div id="product-container">
-        <!-- لیست ۵ محصول GearUP -->
+        <!-- 5 Exact GearUP Products with exact prices -->
         <div class="product-item">
             <div class="prod-meta">
-                <img src="GearUpBoosterIcon.jpg" class="prod-icon">
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon" onerror="this.src='https://via.placeholder.com/44/8b5cf6/ffffff?text=G'">
                 <div>
                     <div class="prod-name">GearUP PC Global 1M</div>
                     <div class="prod-price">$4.00</div>
@@ -222,7 +343,7 @@
 
         <div class="product-item">
             <div class="prod-meta">
-                <img src="GearUpBoosterIcon.jpg" class="prod-icon">
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon" onerror="this.src='https://via.placeholder.com/44/8b5cf6/ffffff?text=G'">
                 <div>
                     <div class="prod-name">GearUP PC Global 3M</div>
                     <div class="prod-price">$11.50</div>
@@ -233,7 +354,7 @@
 
         <div class="product-item">
             <div class="prod-meta">
-                <img src="GearUpBoosterIcon.jpg" class="prod-icon">
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon" onerror="this.src='https://via.placeholder.com/44/8b5cf6/ffffff?text=G'">
                 <div>
                     <div class="prod-name">GearUP PC Global 12M</div>
                     <div class="prod-price">$36.00</div>
@@ -244,49 +365,56 @@
 
         <div class="product-item">
             <div class="prod-meta">
-                <img src="GearUpBoosterIcon.jpg" class="prod-icon">
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon" onerror="this.src='https://via.placeholder.com/44/8b5cf6/ffffff?text=G'">
                 <div>
                     <div class="prod-name">GearUP Mobile Global 1M</div>
                     <div class="prod-price">$4.80</div>
                 </div>
             </div>
-            <button class="buy-button" onclick="sendOrder('mob_gl_1m', 4.80)"><i class="fas fa-shopping-cart"></i> Buy</button>
+            <button class="buy-button" onclick="sendOrder('mobile_global_1m', 4.80)"><i class="fas fa-shopping-cart"></i> Buy</button>
         </div>
 
         <div class="product-item">
             <div class="prod-meta">
-                <img src="GearUpBoosterIcon.jpg" class="prod-icon">
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon" onerror="this.src='https://via.placeholder.com/44/8b5cf6/ffffff?text=G'">
                 <div>
                     <div class="prod-name">GearUP Mobile Iran 1M</div>
                     <div class="prod-price">$1.70</div>
                 </div>
             </div>
-            <button class="buy-button" onclick="sendOrder('mob_ir_1m', 1.70)"><i class="fas fa-shopping-cart"></i> Buy</button>
+            <button class="buy-button" onclick="sendOrder('mobile_iran_1m', 1.70)"><i class="fas fa-shopping-cart"></i> Buy</button>
         </div>
     </div>
 
-    <div style="height: 80px;"></div>
-
-    <!-- Navigation -->
+    <!-- Navigation Bar -->
     <div class="bottom-nav">
-        <a href="#" class="nav-link active"><i class="fas fa-home"></i>Home</a>
-        <a href="#" class="nav-link"><i class="fas fa-th-large"></i>Orders</a>
+        <a href="#" class="nav-link active"><i class="fas fa-house"></i>Home</a>
+        <a href="#" class="nav-link"><i class="fas fa-shapes"></i>Orders</a>
         <a href="#" class="nav-link"><i class="fas fa-headset"></i>Support</a>
         <a href="#" class="nav-link"><i class="fas fa-user"></i>Profile</a>
     </div>
 
     <script>
-        let tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.headerColor = '#050507';
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.headerColor = '#07060b';
+            tg.backgroundColor = '#07060b';
+        }
 
-        function sendOrder(id, price) {
+        function sendOrder(productId, price) {
             const data = {
                 action: 'buy',
-                product_id: id,
-                amount: price
+                product_id: productId,
+                price: price
             };
-            tg.sendData(JSON.stringify(data));
+            
+            if (tg && tg.sendData) {
+                tg.sendData(JSON.stringify(data));
+            } else {
+                alert('سفارش انتخاب شد: ' + productId + ' به مبلغ $' + price);
+            }
         }
     </script>
 </body>
