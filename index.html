@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ButcherShop Store</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --accent-color: #238636;
+            --btn-blue: #1f6feb;
+            --text-main: #c9d1d9;
+            --text-sub: #8b949e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 12px;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: 800;
+            color: #58a6ff;
+            letter-spacing: 0.5px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
+        }
+
+        .card.full {
+            grid-column: span 2;
+        }
+
+        .duration {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .product-name {
+            font-size: 13px;
+            color: var(--text-sub);
+            margin-bottom: 12px;
+        }
+
+        .price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #3fb950;
+            margin-bottom: 12px;
+        }
+
+        .buy-btn {
+            background-color: var(--btn-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 0;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .buy-btn:active {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="brand">ButcherShop 🔪</div>
+        <div id="user-display" style="font-size: 14px; color: var(--text-sub);">User</div>
+    </div>
+
+    <div class="grid">
+        <!-- GearUP PC 1M -->
+        <div class="card">
+            <div>
+                <div class="duration">1 Month</div>
+                <div class="product-name">GearUP PC Global</div>
+            </div>
+            <div>
+                <div class="price">$4.00</div>
+                <button class="buy-btn" onclick="buy('gearup_pc_1m')">Add to cart</button>
+            </div>
+        </div>
+
+        <!-- GearUP Mobile Global 1M -->
+        <div class="card">
+            <div>
+                <div class="duration">1 Month</div>
+                <div class="product-name">GearUP Mobile Global</div>
+            </div>
+            <div>
+                <div class="price">$4.80</div>
+                <button class="buy-btn" onclick="buy('gearup_mob_1m')">Add to cart</button>
+            </div>
+        </div>
+
+        <!-- GearUP PC 3M -->
+        <div class="card">
+            <div>
+                <div class="duration">3 Months</div>
+                <div class="product-name">GearUP PC Global</div>
+            </div>
+            <div>
+                <div class="price">$11.50</div>
+                <button class="buy-btn" onclick="buy('gearup_pc_3m')">Add to cart</button>
+            </div>
+        </div>
+
+        <!-- GearUP Mobile Iran 1M -->
+        <div class="card">
+            <div>
+                <div class="duration">1 Month</div>
+                <div class="product-name">GearUP Mobile Iran</div>
+            </div>
+            <div>
+                <div class="price">$1.70</div>
+                <button class="buy-btn" onclick="buy('gearup_mob_ir_1m')">Add to cart</button>
+            </div>
+        </div>
+
+        <!-- GearUP PC 12M -->
+        <div class="card full">
+            <div>
+                <div class="duration">12 Months</div>
+                <div class="product-name">GearUP PC Global</div>
+            </div>
+            <div>
+                <div class="price">$36.00</div>
+                <button class="buy-btn" onclick="buy('gearup_pc_12m')">Add to cart</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('user-display').innerText = tg.initDataUnsafe.user.first_name;
+        }
+
+        function buy(productId) {
+            // ارسال شناسه محصول خریدار به ربات و بستن Mini App
+            tg.sendData(productId);
+            tg.close();
+        }
+    </script>
+</body>
+</html>
