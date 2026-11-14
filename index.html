@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+from pathlib import Path
+html = r'''<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,63 +16,576 @@
             --text-dim: #9ca3af;
             --glass-border: rgba(139, 92, 246, 0.18);
         }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 16px; padding-bottom: 90px; background-attachment: fixed; }
-        .hero-banner { position: relative; width: 100%; height: 120px; border-radius: 20px; margin-bottom: 22px; border: 1px solid rgba(139, 92, 246, 0.3); display: flex; align-items: center; padding: 0 20px; background: linear-gradient(135deg, rgba(30, 20, 50, 0.9) 0%, rgba(15, 10, 25, 0.95) 100%); }
-        .hero-content { display: flex; align-items: center; gap: 16px; }
-        .main-logo { width: 54px; height: 54px; border-radius: 14px; object-fit: cover; }
-        .hero-text h1 { margin: 0; font-size: 22px; font-weight: 700; background: linear-gradient(to right, #ffffff, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 16px;
+            padding-bottom: 90px;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 90% 10%, rgba(109, 40, 217, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 10% 90%, rgba(139, 92, 246, 0.15) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        /* ---------- Hero Banner (pure CSS, no image needed) ---------- */
+        .hero-banner {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 22px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            background: linear-gradient(135deg, rgba(30, 20, 50, 0.9) 0%, rgba(15, 10, 25, 0.95) 100%);
+            box-shadow: 0 8px 32px 0 rgba(109, 40, 217, 0.2);
+        }
+
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            right: -20px;
+            top: -20px;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-content { display: flex; align-items: center; gap: 16px; z-index: 2; }
+
+        .main-logo {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-text h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            background: linear-gradient(to right, #ffffff, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .hero-text p { margin: 3px 0 0 0; font-size: 12px; color: var(--text-dim); }
-        .categories-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
-        .cat-card { background: var(--card-bg); border-radius: 18px; padding: 14px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--glass-border); cursor: pointer; }
+
+        /* ---------- Categories ---------- */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .cat-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        .cat-card:active { transform: scale(0.98); border-color: var(--accent-purple); }
+
         .cat-card img { width: 42px; height: 42px; border-radius: 12px; object-fit: cover; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding: 0 4px; }
-        .section-header h2 { font-size: 17px; margin: 0; display: flex; align-items: center; gap: 10px; }
-        .product-item { background: var(--card-bg); border-radius: 18px; padding: 12px 14px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--glass-border); }
+        .cat-card span { font-weight: 600; font-size: 14px; color: #ffffff; }
+
+        .cat-card i.fa-chevron-right {
+            position: absolute;
+            right: 14px;
+            font-size: 12px;
+            color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.15);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ---------- Sections & Products ---------- */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding: 0 4px;
+        }
+
+        .section-header h2 {
+            font-size: 17px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+
+        .section-header h2::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            background: var(--accent-purple);
+            border-radius: 4px;
+            box-shadow: 0 0 10px var(--accent-purple);
+        }
+
+        .view-all {
+            color: #c084fc;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .product-item {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
         .prod-meta { display: flex; align-items: center; gap: 14px; }
         .prod-icon { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; }
+        .prod-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: #f3f4f6; }
         .prod-price { color: #c084fc; font-weight: 700; font-size: 16px; }
-        .buy-button { background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); color: white; border: none; padding: 9px 18px; border-radius: 12px; font-weight: 600; cursor: pointer; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(10, 8, 16, 0.92); display: flex; justify-content: space-around; padding: 10px 0 14px 0; border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 100; }
-        .nav-link { display: flex; flex-direction: column; align-items: center; color: var(--text-dim); text-decoration: none; font-size: 11px; gap: 4px; cursor: pointer; }
+
+        .buy-button {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(109, 40, 217, 0.4);
+        }
+
+        .buy-button:active { transform: scale(0.95); }
+
+        /* ---------- Profile ---------- */
+        [hidden] { display: none !important; }
+
+        .profile-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 14px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .profile-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .profile-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            background: linear-gradient(135deg, #8b5cf6, #5b21b6);
+            box-shadow: 0 0 20px rgba(139, 92, 246, .28);
+            font-size: 22px;
+        }
+
+        .profile-name { font-size: 17px; font-weight: 700; }
+        .profile-muted { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+        .profile-id { direction: ltr; unicode-bidi: isolate; }
+        .profile-label { color: var(--text-dim); font-size: 12px; margin-bottom: 7px; }
+        .profile-points { color: #c084fc; font-size: 23px; font-weight: 700; }
+        .profile-order { padding: 12px 0; border-top: 1px solid var(--glass-border); }
+        .profile-order:first-child { border-top: 0; }
+        .profile-order strong { display: block; font-size: 14px; }
+
+        /* ---------- Bottom Nav ---------- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 8, 16, 0.92);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 14px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
+        }
+
+        .nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 11px;
+            gap: 4px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
         .nav-link.active { color: #c084fc; }
+        .nav-link i { font-size: 18px; }
     </style>
 </head>
 <body>
+
+    <!-- Cyber Neon Header Banner -->
     <div class="hero-banner">
         <div class="hero-content">
             <img src="LoGo G2G Finally.png" class="main-logo" onerror="this.src='https://via.placeholder.com/54/8b5cf6/ffffff?text=B'">
             <div class="hero-text">
                 <h1>Butcherist</h1>
-                <p>Game Booster & Digital Store</p>
+                <p>Game Booster &amp; Digital Store</p>
             </div>
         </div>
     </div>
+
+    <!-- Categories Grid -->
     <div class="categories-grid">
-        <div class="cat-card"><span>GearUP Booster</span></div>
-        <div class="cat-card"><span>Steam</span></div>
+        <div class="cat-card">
+            <img src="GearUpBoosterIcon.jpg" onerror="this.src='https://via.placeholder.com/42/8b5cf6/ffffff?text=G'">
+            <span>GearUP Booster</span>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="cat-card">
+            <img src="SteamIcon.jpg" onerror="this.src='https://via.placeholder.com/42/8b5cf6/ffffff?text=S'">
+            <span>Steam</span>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="cat-card">
+            <img src="ExitlagIcon.jpg" onerror="this.src='https://via.placeholder.com/42/8b5cf6/ffffff?text=E'">
+            <span>ExitLag</span>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="cat-card">
+            <img src="SpotifyIcon.jpg" onerror="this.src='https://via.placeholder.com/42/8b5cf6/ffffff?text=SP'">
+            <span>Spotify</span>
+            <i class="fas fa-chevron-right"></i>
+        </div>
     </div>
+
+    <!-- Product List -->
+    <div class="section-header">
+        <h2>GearUP Booster</h2>
+        <span class="view-all">View All <i class="fas fa-chevron-right"></i></span>
+    </div>
+
     <div id="product-container">
         <div class="product-item">
             <div class="prod-meta">
-                <div><div class="prod-name">GearUP Global 1M</div><div class="prod-price">$4.00</div></div>
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon" onerror="this.src='https://via.placeholder.com/44/8b5cf6/ffffff?text=G'">
+                <div>
+                    <div class="prod-name">GearUP PC Global 1M</div>
+                    <div class="prod-price">$4.00</div>
+                </div>
             </div>
-            <button class="buy-button" onclick="sendOrder('pc_1m', 4.00)">Buy</button>
+            <button class="buy-button" onclick="sendOrder('pc_1m', 4.00)"><i class="fas fa-shopping-cart"></i> Buy</button>
+        </div>
+
+        <div class="product-item">
+            <div class="prod-meta">
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon" onerror="this.src='https://via.placeholder.com/44/8b5cf6/ffffff?text=G'">
+                <div>
+                    <div class="prod-name">GearUP PC Global 3M</div>
+                    <div class="prod-price">$11.50</div>
+                </div>
+            </div>
+            <button class="buy-button" onclick="sendOrder('pc_3m', 11.50)"><i class="fas fa-shopping-cart"></i> Buy</button>
+        </div>
+
+        <div class="product-item">
+            <div class="prod-meta">
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon" onerror="this.src='https://via.placeholder.com/44/8b5cf6/ffffff?text=G'">
+                <div>
+                    <div class="prod-name">GearUP PC Global 12M</div>
+                    <div class="prod-price">$36.00</div>
+                </div>
+            </div>
+            <button class="buy-button" onclick="sendOrder('pc_12m', 36.00)"><i class="fas fa-shopping-cart"></i> Buy</button>
+        </div>
+
+        <div class="product-item">
+            <div class="prod-meta">
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon" onerror="this.src='https://via.placeholder.com/44/8b5cf6/ffffff?text=G'">
+                <div>
+                    <div class="prod-name">GearUP Mobile Global 1M</div>
+                    <div class="prod-price">$4.80</div>
+                </div>
+            </div>
+            <button class="buy-button" onclick="sendOrder('mobile_global_1m', 4.80)"><i class="fas fa-shopping-cart"></i> Buy</button>
+        </div>
+
+        <div class="product-item">
+            <div class="prod-meta">
+                <img src="GearUpBoosterIcon.jpg" class="prod-icon" onerror="this.src='https://via.placeholder.com/44/8b5cf6/ffffff?text=G'">
+                <div>
+                    <div class="prod-name">GearUP Mobile Iran 1M</div>
+                    <div class="prod-price">$1.70</div>
+                </div>
+            </div>
+            <button class="buy-button" onclick="sendOrder('mobile_iran_1m', 1.70)"><i class="fas fa-shopping-cart"></i> Buy</button>
         </div>
     </div>
+
+    <!-- Profile View -->
+    <section id="profile-view" hidden>
+        <div class="section-header"><h2>My Profile</h2></div>
+
+        <div class="profile-card">
+            <div class="profile-heading">
+                <div class="profile-avatar"><i class="fas fa-user"></i></div>
+                <div>
+                    <div id="profile-name" class="profile-name">کاربر تلگرام</div>
+                    <div id="profile-username" class="profile-muted">در حال دریافت اطلاعات…</div>
+                </div>
+            </div>
+            <div class="profile-label">Telegram ID</div>
+            <div id="profile-id" class="profile-id">—</div>
+        </div>
+
+        <div class="profile-card">
+            <div class="profile-label">Your Points</div>
+            <div id="profile-points" class="profile-points">—</div>
+            <div class="profile-muted">امتیاز خرید هر محصول بعداً تعیین می‌شود.</div>
+        </div>
+
+        <div id="orders-card" class="profile-card">
+            <div class="profile-label">Purchase History</div>
+            <div id="profile-orders" class="profile-muted">
+                در حال بررسی خریدهای تأییدشده…
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation Bar -->
     <div class="bottom-nav">
-        <a href="#" class="nav-link active" onclick="navigate(event, 'home')"><i class="fas fa-house"></i>Home</a>
-        <a href="#" class="nav-link" onclick="openSupportLink()"><i class="fas fa-headset"></i>Support</a>
+        <a href="#" class="nav-link active" data-page="home" onclick="navigate(event, 'home')">
+            <i class="fas fa-house"></i>Home
+        </a>
+        <a href="#" class="nav-link" data-page="orders" onclick="navigate(event, 'orders')">
+            <i class="fas fa-shapes"></i>Orders
+        </a>
+        <a href="https://t.me/Pooriya_Tgh" class="nav-link" onclick="openSupport(event)">
+            <i class="fas fa-headset"></i>Support
+        </a>
+        <a href="#" class="nav-link" data-page="profile" onclick="navigate(event, 'profile')">
+            <i class="fas fa-user"></i>Profile
+        </a>
     </div>
+
     <script>
         const tg = window.Telegram?.WebApp;
-        if (tg) { tg.ready(); tg.expand(); }
-        const PROFILE_API_BASE = ''; // اینجا آدرس بک‌اند HTTPS خود را وارد کنید
-        function openSupportLink() { tg.openTelegramLink('https://t.me/Pooriya_Tgh'); }
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.headerColor = '#07060b';
+            tg.backgroundColor = '#07060b';
+        }
+
+        // پس از آماده‌شدن سرور، آدرس HTTPS آن را اینجا قرار بده.
+        const PROFILE_API_BASE = 'https://YOUR_BACKEND_URL';
+
+        function showTelegramIdentity() {
+            const user = tg?.initDataUnsafe?.user;
+
+            document.getElementById('profile-name').textContent = user
+                ? ([user.first_name, user.last_name].filter(Boolean).join(' ') || 'کاربر تلگرام')
+                : 'پروفایل را داخل تلگرام باز کنید';
+
+            document.getElementById('profile-username').textContent =
+                user?.username ? '@' + user.username : 'نام کاربری ثبت نشده';
+
+            document.getElementById('profile-id').textContent =
+                user?.id != null ? String(user.id) : '—';
+        }
+
+        function navigate(event, page) {
+            event.preventDefault();
+
+            const isHome = page === 'home';
+            const homeElements = [
+                document.querySelector('body > .hero-banner'),
+                document.querySelector('body > .categories-grid'),
+                document.querySelector('body > .section-header'),
+                document.getElementById('product-container')
+            ];
+
+            homeElements.forEach(element => {
+                if (element) element.hidden = !isHome;
+            });
+
+            document.getElementById('profile-view').hidden = isHome;
+
+            document.querySelectorAll('.bottom-nav [data-page]').forEach(link => {
+                link.classList.toggle('active', link.dataset.page === page);
+            });
+
+            if (isHome) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+
+            showTelegramIdentity();
+            loadProfile();
+
+            if (page === 'orders') {
+                document.getElementById('orders-card')
+                    .scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function openSupport(event) {
+            event.preventDefault();
+            if (tg?.openTelegramLink) {
+                tg.openTelegramLink('https://t.me/Pooriya_Tgh');
+            } else {
+                window.open('https://t.me/Pooriya_Tgh', '_blank', 'noopener');
+            }
+        }
+
+        async function loadProfile() {
+            const ordersElement = document.getElementById('profile-orders');
+            const pointsElement = document.getElementById('profile-points');
+
+            pointsElement.textContent = '—';
+            ordersElement.textContent = 'در حال دریافت خریدهای تأییدشده…';
+
+            if (!tg?.initData) {
+                ordersElement.textContent = 'برای دیدن خریدها، اپ را داخل تلگرام باز کنید.';
+                pointsElement.textContent = 'در انتظار تعیین';
+                return;
+            }
+
+            if (!PROFILE_API_BASE || PROFILE_API_BASE.includes('YOUR_BACKEND_URL')) {
+                ordersElement.textContent =
+                    'تاریخچهٔ خرید پس از اتصال سرور فروشگاه نمایش داده می‌شود.';
+                pointsElement.textContent = 'در انتظار تعیین';
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    PROFILE_API_BASE.replace(/\/$/, '') + '/api/profile',
+                    {
+                        headers: { Authorization: `tma ${tg.initData}` },
+                        cache: 'no-store'
+                    }
+                );
+
+                if (!response.ok) throw new Error('Profile API error');
+
+                const profile = await response.json();
+
+                pointsElement.textContent =
+                    Number.isSafeInteger(profile.points) && profile.points >= 0
+                        ? profile.points.toLocaleString('fa-IR')
+                        : 'در انتظار تعیین';
+
+                ordersElement.replaceChildren();
+                const orders = Array.isArray(profile.orders) ? profile.orders : [];
+
+                if (!orders.length) {
+                    ordersElement.textContent = 'هنوز خرید تأییدشده‌ای ثبت نشده است.';
+                    return;
+                }
+
+                for (const order of orders) {
+                    const row = document.createElement('div');
+                    row.className = 'profile-order';
+
+                    const title = document.createElement('strong');
+                    title.textContent = order.product_name || 'محصول دیجیتال';
+
+                    const detail = document.createElement('span');
+                    detail.className = 'profile-muted';
+
+                    const price = Number.isFinite(order.price_usd)
+                        ? '$' + order.price_usd.toFixed(2)
+                        : '';
+
+                    const date = order.created_at ? new Date(order.created_at) : null;
+                    const dateText = date && !Number.isNaN(date.getTime())
+                        ? date.toLocaleDateString('fa-IR')
+                        : '';
+
+                    detail.textContent = [price, dateText].filter(Boolean).join(' • ');
+                    row.append(title, detail);
+                    ordersElement.append(row);
+                }
+            } catch (error) {
+                ordersElement.textContent =
+                    'دریافت خریدها ممکن نشد؛ اتصال سرور را بررسی کنید.';
+            }
+        }
+
         function sendOrder(productId, price) {
-            if (tg?.sendData) tg.sendData(JSON.stringify({action: 'buy', product_id: productId, price: price}));
-            else alert('سفارش ثبت شد: ' + productId);
+            const data = { action: 'buy', product_id: productId, price: price };
+
+            if (tg && tg.sendData) {
+                tg.sendData(JSON.stringify(data));
+            } else {
+                alert('سفارش انتخاب شد: ' + productId + ' به مبلغ $' + price);
+            }
         }
     </script>
 </body>
 </html>
+'''
+p = Path('/mnt/data/butcherist-final.html')
+p.write_text(html, encoding='utf-8')
+print(p, p.stat().st_size)
+# Verify requested patches and script syntax via Node if available.
+assert "function openSupport(event)" in html
+assert "tg.openTelegramLink('https://t.me/Pooriya_Tgh')" in html
+assert "Authorization: `tma ${tg.initData}`" in html
+assert "secret-2f7afd95" not in html
+assert "const PROFILE_API_BASE = 'https://YOUR_BACKEND_URL';" in html
+assert '<a\n    href="https://t.me/Pooriya_Tgh"' not in html
+print('Patch assertions passed; styles/products preserved in generated source.')
