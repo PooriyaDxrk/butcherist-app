@@ -2,185 +2,133 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ButcherShop Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Butcherist Store</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: #0d1117;
-            --card-bg: #161b22;
-            --accent-color: #238636;
-            --btn-blue: #1f6feb;
-            --text-main: #c9d1d9;
-            --text-sub: #8b949e;
+            --bg: #0d0d12; --card: #16171d; --accent: #8b5cf6;
+            --text: #ffffff; --muted: #94a3b8; --border: rgba(255,255,255,0.06);
         }
-
+        body.light {
+            --bg: #f8fafc; --card: #ffffff; --text: #0f172a;
+            --muted: #64748b; --border: rgba(0,0,0,0.05);
+        }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 16px;
-            box-sizing: border-box;
+            margin: 0; padding: 16px; background: var(--bg); color: var(--text);
+            font-family: -apple-system, system-ui, sans-serif; transition: 0.3s;
+            overflow-x: hidden;
         }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #30363d;
-            padding-bottom: 12px;
+        .header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding: 4px; }
+        .logo { 
+            width: 52px; height: 52px; border-radius: 14px; object-fit: cover; 
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.25);
+            border: 1px solid var(--border);
         }
+        .brand h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+        .brand p { margin: 0; font-size: 11px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
-        .brand {
-            font-size: 22px;
-            font-weight: 800;
-            color: #58a6ff;
-            letter-spacing: 0.5px;
+        .section-title { font-size: 15px; font-weight: 700; margin: 24px 0 14px; color: var(--muted); display: flex; justify-content: space-between; }
+        
+        .cats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .cat { 
+            background: var(--card); border: 1px solid var(--border); padding: 18px; 
+            border-radius: 20px; text-align: center; cursor: pointer; transition: all 0.2s;
         }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+        .cat:active { transform: scale(0.95); background: var(--accent); }
+        .cat:active .cat-label { color: white; }
+        .cat-ico { font-size: 24px; display: block; margin-bottom: 8px; }
+        .cat-label { font-size: 13px; font-weight: 600; color: var(--text); }
+        
+        .prod { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 20px; 
+            padding: 14px; display: flex; align-items: center; gap: 14px; margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            text-align: center;
-        }
-
-        .card.full {
-            grid-column: span 2;
-        }
-
-        .duration {
-            font-size: 20px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 4px;
-        }
-
-        .product-name {
-            font-size: 13px;
-            color: var(--text-sub);
-            margin-bottom: 12px;
-        }
-
-        .price {
-            font-size: 18px;
-            font-weight: 700;
-            color: #3fb950;
-            margin-bottom: 12px;
-        }
-
-        .buy-btn {
-            background-color: var(--btn-blue);
-            color: #ffffff;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 0;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .buy-btn:active {
-            opacity: 0.8;
+        .prod-img { width: 54px; height: 54px; border-radius: 12px; object-fit: cover; background: #23242f; }
+        .prod-info { flex: 1; }
+        .prod-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; line-height: 1.2; }
+        .prod-price { color: var(--accent); font-weight: 800; font-size: 16px; }
+        .buy-btn { 
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border: none; 
+            padding: 10px 18px; border-radius: 12px; font-weight: 700; font-size: 13px;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
         }
     </style>
 </head>
 <body>
-
     <div class="header">
-        <div class="brand">ButcherShop 🔪</div>
-        <div id="user-display" style="font-size: 14px; color: var(--text-sub);">User</div>
-    </div>
-
-    <div class="grid">
-        <!-- GearUP PC 1M -->
-        <div class="card">
-            <div>
-                <div class="duration">1 Month</div>
-                <div class="product-name">GearUP PC Global</div>
-            </div>
-            <div>
-                <div class="price">$4.00</div>
-                <button class="buy-btn" onclick="buy('gearup_pc_1m')">Add to cart</button>
-            </div>
-        </div>
-
-        <!-- GearUP Mobile Global 1M -->
-        <div class="card">
-            <div>
-                <div class="duration">1 Month</div>
-                <div class="product-name">GearUP Mobile Global</div>
-            </div>
-            <div>
-                <div class="price">$4.80</div>
-                <button class="buy-btn" onclick="buy('gearup_mob_1m')">Add to cart</button>
-            </div>
-        </div>
-
-        <!-- GearUP PC 3M -->
-        <div class="card">
-            <div>
-                <div class="duration">3 Months</div>
-                <div class="product-name">GearUP PC Global</div>
-            </div>
-            <div>
-                <div class="price">$11.50</div>
-                <button class="buy-btn" onclick="buy('gearup_pc_3m')">Add to cart</button>
-            </div>
-        </div>
-
-        <!-- GearUP Mobile Iran 1M -->
-        <div class="card">
-            <div>
-                <div class="duration">1 Month</div>
-                <div class="product-name">GearUP Mobile Iran</div>
-            </div>
-            <div>
-                <div class="price">$1.70</div>
-                <button class="buy-btn" onclick="buy('gearup_mob_ir_1m')">Add to cart</button>
-            </div>
-        </div>
-
-        <!-- GearUP PC 12M -->
-        <div class="card full">
-            <div>
-                <div class="duration">12 Months</div>
-                <div class="product-name">GearUP PC Global</div>
-            </div>
-            <div>
-                <div class="price">$36.00</div>
-                <button class="buy-btn" onclick="buy('gearup_pc_12m')">Add to cart</button>
-            </div>
+        <!-- اصلاح نام و پسوند لوگو -->
+        <img src="LoGo G2G Finally.png" class="logo" onerror="this.src='https://via.placeholder.com/52?text=B'">
+        <div class="brand">
+            <h1>Butcherist</h1>
+            <p>Digital Store</p>
         </div>
     </div>
+
+    <div class="section-title">Categories</div>
+    <div class="cats">
+        <div class="cat" onclick="filter('gearup')">
+            <span class="cat-ico">🚀</span>
+            <span class="cat-label">GearUP</span>
+        </div>
+        <div class="cat" onclick="filter('steam')">
+            <span class="cat-ico">🎮</span>
+            <span class="cat-label">Steam</span>
+        </div>
+        <div class="cat" onclick="filter('roblox')">
+            <span class="cat-ico">🧱</span>
+            <span class="cat-label">Roblox</span>
+        </div>
+        <div class="cat" onclick="filter('minecraft')">
+            <span class="cat-ico">⛏️</span>
+            <span class="cat-label">Minecraft</span>
+        </div>
+    </div>
+
+    <div class="section-title" id="cat-label">Featured: GearUP</div>
+    <div id="product-list"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.ready();
         tg.expand();
+        // تشخیص تم روز و شب تلگرام
+        if(tg.colorScheme === 'light') document.body.classList.add('light');
 
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('user-display').innerText = tg.initDataUnsafe.user.first_name;
+        const products = [
+            { id: 'g_pc_1', cat: 'gearup', name: 'GearUP Booster PC (1 Month)', price: '3.47$' },
+            { id: 'g_pc_3', cat: 'gearup', name: 'GearUP Booster PC (3 Month)', price: '10.50$' },
+            { id: 'g_mob_1', cat: 'gearup', name: 'GearUP Mobile (1 Month)', price: '4.80$' },
+            { id: 's_5', cat: 'steam', name: 'Steam Gift Card 5$', price: '5.20$' },
+            { id: 'r_1000', cat: 'roblox', name: '1000 Robux', price: '12.00$' }
+        ];
+
+        function render(cat) {
+            const list = document.getElementById('product-list');
+            list.innerHTML = products.filter(p => p.cat === cat).map(p => `
+                <div class="prod">
+                    <!-- اصلاح نام و پسوند آیکون محصولات -->
+                    <img src="GearUpBoosterIcon.jpg" class="prod-img" onerror="this.src='https://via.placeholder.com/54?text=App'">
+                    <div class="prod-info">
+                        <div class="prod-name">${p.name}</div>
+                        <div class="prod-price">${p.price}</div>
+                    </div>
+                    <button class="buy-btn" onclick="buy('${p.id}')">Buy</button>
+                </div>
+            `).join('');
         }
 
-        function buy(productId) {
-            // ارسال شناسه محصول خریدار به ربات و بستن Mini App
-            tg.sendData(productId);
-            tg.close();
+        function filter(c) {
+            document.getElementById('cat-label').innerText = "Category: " + c.toUpperCase();
+            render(c);
         }
+
+        function buy(id) {
+            tg.HapticFeedback.impactOccurred('medium');
+            tg.sendData(id); // این شناسه را به بات تلگرام می‌فرستد
+        }
+        
+        render('gearup');
     </script>
 </body>
 </html>
