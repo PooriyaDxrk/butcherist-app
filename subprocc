@@ -1,0 +1,34 @@
+import re, subprocess, shutil
+html = Path('/mnt/data/butcherist-final.html').read_text(encoding='utf-8')
+scripts = re.findall(r'<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>', html, re.S)
+print('inline scripts:', len(scripts))
+Path('/mnt/data/_check.js').write_text(scripts[0], encoding='utf-8')
+node = shutil.which('node')
+if node:
+    r = subprocess.run([node, '--check', '/mnt/data/_check.js'], capture_output=True, text=True)
+    print('node --check rc:', r.returncode, r.stderr.strip())
+else:
+    print('node not available')
+try:
+    from html.parser import HTMLParser
+    class P(HTMLParser):
+        def __init__(self):
+            super().__init__(); self.stack=[]; self.errs=[]
+            self.void={'meta','link','img','br','hr','input','source','area','base','col','embed','param','track','wbr'}
+        def handle_starttag(self, tag, attrs):
+            if tag not in self.void: self.stack.append(tag)
+        def handle_endtag(self, tag):
+            if tag in self.void: return
+            if self.stack and self.stack[-1]==tag: self.stack.pop()
+            else:
+                # be lenient for optional closes like <p>/<li>
+                if tag in self.stack:
+                    while self.stack and self.stack.pop()!=tag: pass
+                else: self.errs.append(f'unexpected </{tag}>')
+    p=P(); p.feed(html)
+    print('unclosed tags:', p.stack, 'errors:', p.errs[:5])
+except Exception as e:
+    print('parse error', e)
+print('has doctype:', html.lstrip().lower().startswith('<!doctype html>'))
+print('charset utf-8:', 'charset="UTF-8"' in html)
+Path('/mnt/data/_check.js').unlink()
