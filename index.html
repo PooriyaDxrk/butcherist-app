@@ -1,134 +1,387 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Butcherist Store</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root {
-            --bg: #0d0d12; --card: #16171d; --accent: #8b5cf6;
-            --text: #ffffff; --muted: #94a3b8; --border: rgba(255,255,255,0.06);
-        }
-        body.light {
-            --bg: #f8fafc; --card: #ffffff; --text: #0f172a;
-            --muted: #64748b; --border: rgba(0,0,0,0.05);
-        }
-        body {
-            margin: 0; padding: 16px; background: var(--bg); color: var(--text);
-            font-family: -apple-system, system-ui, sans-serif; transition: 0.3s;
-            overflow-x: hidden;
-        }
-        .header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding: 4px; }
-        .logo { 
-            width: 52px; height: 52px; border-radius: 14px; object-fit: cover; 
-            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.25);
-            border: 1px solid var(--border);
-        }
-        .brand h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-        .brand p { margin: 0; font-size: 11px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Butcherist Store</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg-color: var(--tg-theme-bg-color, #0f0f12);
+      --secondary-bg: var(--tg-theme-secondary-bg-color, #18181c);
+      --text-color: var(--tg-theme-text-color, #ffffff);
+      --hint-color: var(--tg-theme-hint-color, #a1a1aa);
+      --accent-color: var(--tg-theme-button-color, #7c3aed);
+      --accent-hover: #6d28d9;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --card-border: rgba(255, 255, 255, 0.08);
+    }
 
-        .section-title { font-size: 15px; font-weight: 700; margin: 24px 0 14px; color: var(--muted); display: flex; justify-content: space-between; }
-        
-        .cats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .cat { 
-            background: var(--card); border: 1px solid var(--border); padding: 18px; 
-            border-radius: 20px; text-align: center; cursor: pointer; transition: all 0.2s;
-        }
-        .cat:active { transform: scale(0.95); background: var(--accent); }
-        .cat:active .cat-label { color: white; }
-        .cat-ico { font-size: 24px; display: block; margin-bottom: 8px; }
-        .cat-label { font-size: 13px; font-weight: 600; color: var(--text); }
-        
-        .prod { 
-            background: var(--card); border: 1px solid var(--border); border-radius: 20px; 
-            padding: 14px; display: flex; align-items: center; gap: 14px; margin-bottom: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .prod-img { width: 54px; height: 54px; border-radius: 12px; object-fit: cover; background: #23242f; }
-        .prod-info { flex: 1; }
-        .prod-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; line-height: 1.2; }
-        .prod-price { color: var(--accent); font-weight: 800; font-size: 16px; }
-        .buy-btn { 
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border: none; 
-            padding: 10px 18px; border-radius: 12px; font-weight: 700; font-size: 13px;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
-        }
-    </style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 16px;
+      padding-bottom: 90px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.75rem;
+      color: var(--hint-color);
+    }
+
+    /* Categories Grid */
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--hint-color);
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .category-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .category-card:active {
+      transform: scale(0.97);
+    }
+
+    .category-card.active {
+      border-color: var(--accent-color);
+      background: rgba(124, 58, 237, 0.1);
+    }
+
+    .category-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      object-fit: contain;
+      margin-bottom: 8px;
+    }
+
+    .category-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    /* Products List */
+    .products-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .product-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .product-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .product-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .product-desc {
+      font-size: 0.75rem;
+      color: var(--hint-color);
+    }
+
+    .product-price {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #10b981;
+    }
+
+    .price-pending {
+      font-size: 0.75rem;
+      color: var(--hint-color);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .btn-select {
+      background: var(--accent-color);
+      color: #ffffff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Navigation / Cart Footer */
+    .footer-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--secondary-bg);
+      border-top: 1px solid var(--card-border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(10px);
+    }
+
+    .cart-summary {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-label {
+      font-size: 0.75rem;
+      color: var(--hint-color);
+    }
+
+    .cart-total {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .btn-checkout {
+      background: var(--accent-color);
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <!-- اصلاح نام و پسوند لوگو -->
-        <img src="LoGo G2G Finally.png" class="logo" onerror="this.src='https://via.placeholder.com/52?text=B'">
-        <div class="brand">
-            <h1>Butcherist</h1>
-            <p>Digital Store</p>
-        </div>
+
+  <!-- Header -->
+  <div class="header">
+    <img src="LoGo G2G Finally.png" alt="Butcherist Logo" class="brand-logo" onerror="this.src='https://via.placeholder.com/44'">
+    <div>
+      <div class="brand-title">Butcherist</div>
+      <div class="brand-subtitle">فروشگاه تخصصی اشتراک و کد دیجیتال</div>
     </div>
+  </div>
 
-    <div class="section-title">Categories</div>
-    <div class="cats">
-        <div class="cat" onclick="filter('gearup')">
-            <span class="cat-ico">🚀</span>
-            <span class="cat-label">GearUP</span>
-        </div>
-        <div class="cat" onclick="filter('steam')">
-            <span class="cat-ico">🎮</span>
-            <span class="cat-label">Steam</span>
-        </div>
-        <div class="cat" onclick="filter('roblox')">
-            <span class="cat-ico">🧱</span>
-            <span class="cat-label">Roblox</span>
-        </div>
-        <div class="cat" onclick="filter('minecraft')">
-            <span class="cat-ico">⛏️</span>
-            <span class="cat-label">Minecraft</span>
-        </div>
+  <!-- Categories -->
+  <div class="section-title">دسته‌بندی‌ها</div>
+  <div class="categories-grid">
+    <div class="category-card active" onclick="selectCategory('gearup')">
+      <img src="GearUpBoosterIcon.jpg" alt="GearUP" class="category-icon" onerror="this.src='https://via.placeholder.com/48'">
+      <div class="category-name">GearUP Booster</div>
     </div>
+    <div class="category-card" onclick="selectCategory('steam')">
+      <img src="https://via.placeholder.com/48/1b2838/ffffff?text=Steam" alt="Steam" class="category-icon">
+      <div class="category-name">Steam Gift Card</div>
+    </div>
+    <div class="category-card" onclick="selectCategory('playstation')">
+      <img src="https://via.placeholder.com/48/003791/ffffff?text=PSN" alt="PlayStation" class="category-icon">
+      <div class="category-name">PlayStation</div>
+    </div>
+    <div class="category-card" onclick="selectCategory('other')">
+      <img src="https://via.placeholder.com/48/7c3aed/ffffff?text=More" alt="Other" class="category-icon">
+      <div class="category-name">سایر محصولات</div>
+    </div>
+  </div>
 
-    <div class="section-title" id="cat-label">Featured: GearUP</div>
-    <div id="product-list"></div>
+  <!-- Products -->
+  <div class="section-title" id="products-header">محصولات GearUP Booster</div>
+  <div class="products-container" id="products-list">
+    <!-- به صورت پویا توسط JavaScript پر می‌شود -->
+  </div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        // تشخیص تم روز و شب تلگرام
-        if(tg.colorScheme === 'light') document.body.classList.add('light');
+  <!-- Footer -->
+  <div class="footer-bar">
+    <div class="cart-summary">
+      <span class="cart-label">محصول انتخابی:</span>
+      <span class="cart-total" id="selected-product-name">هیچ‌کدام</span>
+    </div>
+    <button class="btn-checkout" id="btn-submit" onclick="submitOrder()">تأیید و سفارش</button>
+  </div>
 
-        const products = [
-            { id: 'g_pc_1', cat: 'gearup', name: 'GearUP Booster PC (1 Month)', price: '3.47$' },
-            { id: 'g_pc_3', cat: 'gearup', name: 'GearUP Booster PC (3 Month)', price: '10.50$' },
-            { id: 'g_mob_1', cat: 'gearup', name: 'GearUP Mobile (1 Month)', price: '4.80$' },
-            { id: 's_5', cat: 'steam', name: 'Steam Gift Card 5$', price: '5.20$' },
-            { id: 'r_1000', cat: 'roblox', name: '1000 Robux', price: '12.00$' }
-        ];
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
 
-        function render(cat) {
-            const list = document.getElementById('product-list');
-            list.innerHTML = products.filter(p => p.cat === cat).map(p => `
-                <div class="prod">
-                    <!-- اصلاح نام و پسوند آیکون محصولات -->
-                    <img src="GearUpBoosterIcon.jpg" class="prod-img" onerror="this.src='https://via.placeholder.com/54?text=App'">
-                    <div class="prod-info">
-                        <div class="prod-name">${p.name}</div>
-                        <div class="prod-price">${p.price}</div>
-                    </div>
-                    <button class="buy-btn" onclick="buy('${p.id}')">Buy</button>
-                </div>
-            `).join('');
-        }
+    // پایگاه داده محصولات
+    const productsData = {
+      gearup: [
+        { id: 'g_pc_1m', title: 'GearUP PC - 1 Month', desc: 'اشتراک ۱ ماهه سیستم', price: 3.47, currency: '$' },
+        { id: 'g_pc_3m', title: 'GearUP PC - 3 Months', desc: 'اشتراک ۳ ماهه سیستم', price: 9.99, currency: '$' },
+        { id: 'g_pc_12m', title: 'GearUP PC - 12 Months', desc: 'اشتراک ۱ ساله سیستم (تخفیف ویژه)', price: 29.99, currency: '$' },
+        { id: 'g_mob_1m', title: 'GearUP Mobile - 1 Month', desc: 'اشتراک ۱ ماهه موبایل', price: 2.49, currency: '$' },
+        { id: 'g_mob_3m', title: 'GearUP Mobile - 3 Months', desc: 'اشتراک ۳ ماهه موبایل', price: 6.99, currency: '$' },
+        { id: 'g_mob_12m', title: 'GearUP Mobile - 12 Months', desc: 'اشتراک ۱ ساله موبایل', price: 19.99, currency: '$' }
+      ],
+      steam: [
+        { id: 'st_5', title: 'Steam Gift Card $5', desc: 'گیفت کارت ۵ دلاری استیم', price: null, currency: '$' },
+        { id: 'st_10', title: 'Steam Gift Card $10', desc: 'گیفت کارت ۱۰ دلاری استیم', price: null, currency: '$' },
+        { id: 'st_20', title: 'Steam Gift Card $20', desc: 'گیفت کارت ۲۰ دلاری استیم', price: null, currency: '$' },
+        { id: 'st_50', title: 'Steam Gift Card $50', desc: 'گیفت کارت ۵۰ دلاری استیم', price: null, currency: '$' }
+      ],
+      playstation: [
+        { id: 'ps_10', title: 'PlayStation Network $10', desc: 'گیفت کارت ۱۰ دلاری آمریکا', price: null, currency: '$' },
+        { id: 'ps_25', title: 'PlayStation Network $25', desc: 'گیفت کارت ۲۵ دلاری آمریکا', price: null, currency: '$' }
+      ],
+      other: [
+        { id: 'sub_exitlag', title: 'ExitLag 1 Month', desc: 'کاهش پینگ اکزیت لگ ۱ ماهه', price: null, currency: '$' },
+        { id: 'sub_spotify', title: 'Spotify Premium 1 Month', desc: 'اشتراک پرمیوم اسپاتیفای', price: null, currency: '$' }
+      ]
+    };
 
-        function filter(c) {
-            document.getElementById('cat-label').innerText = "Category: " + c.toUpperCase();
-            render(c);
-        }
+    let currentSelectedProduct = null;
 
-        function buy(id) {
-            tg.HapticFeedback.impactOccurred('medium');
-            tg.sendData(id); // این شناسه را به بات تلگرام می‌فرستد
-        }
-        
-        render('gearup');
-    </script>
+    function renderProducts(categoryKey) {
+      const container = document.getElementById('products-list');
+      container.innerHTML = '';
+      const list = productsData[categoryKey] || [];
+
+      list.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+
+        const priceDisplay = item.price !== null 
+          ? `<span class="product-price">${item.currency}${item.price.toFixed(2)}</span>`
+          : `<span class="price-pending">به‌زودی / استعلام</span>`;
+
+        card.innerHTML = `
+          <div class="product-info">
+            <img src="${categoryKey === 'gearup' ? 'GearUpBoosterIcon.jpg' : 'https://via.placeholder.com/40'}" class="product-img" onerror="this.src='https://via.placeholder.com/40'">
+            <div class="product-details">
+              <div class="product-title">${item.title}</div>
+              <div class="product-desc">${item.desc}</div>
+            </div>
+          </div>
+          <div>
+            ${priceDisplay}
+          </div>
+        `;
+
+        card.onclick = () => {
+          if (item.price === null) {
+            alert('قیمت این محصول به زودی به‌روزرسانی خواهد شد.');
+            return;
+          }
+          currentSelectedProduct = item;
+          document.getElementById('selected-product-name').innerText = item.title;
+        };
+
+        container.appendChild(card);
+      });
+    }
+
+    function selectCategory(catKey) {
+      document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      
+      const titles = {
+        gearup: 'محصولات GearUP Booster',
+        steam: 'گیفت کارت‌های Steam',
+        playstation: 'گیفت کارت‌های PlayStation',
+        other: 'سایر سرویس‌ها و اشتراک‌ها'
+      };
+      document.getElementById('products-header').innerText = titles[catKey] || 'محصولات';
+
+      renderProducts(catKey);
+    }
+
+    function submitOrder() {
+      if (!currentSelectedProduct) {
+        alert('لطفاً ابتدا یک محصول را انتخاب کنید.');
+        return;
+      }
+
+      const payload = {
+        product_id: currentSelectedProduct.id,
+        title: currentSelectedProduct.title,
+        price: currentSelectedProduct.price,
+        currency: currentSelectedProduct.currency,
+        timestamp: new Date().toISOString()
+      };
+
+      if (tg && tg.sendData) {
+        tg.sendData(JSON.stringify(payload));
+      } else {
+        console.log('داده‌های ارسالی به بات:', payload);
+        alert('درخواست با موفقیت ثبت شد: ' + currentSelectedProduct.title);
+      }
+    }
+
+    // بارگذاری اولیه
+    renderProducts('gearup');
+  </script>
 </body>
 </html>
