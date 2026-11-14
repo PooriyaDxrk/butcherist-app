@@ -1,5 +1,4 @@
-from pathlib import Path
-html = r'''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -430,7 +429,7 @@ html = r'''<!DOCTYPE html>
         }
 
         // پس از آماده‌شدن سرور، آدرس HTTPS آن را اینجا قرار بده.
-        const PROFILE_API_BASE = 'https://YOUR_BACKEND_URL';
+        const PROFILE_API_BASE = '';
 
         function showTelegramIdentity() {
             const user = tg?.initDataUnsafe?.user;
@@ -482,13 +481,16 @@ html = r'''<!DOCTYPE html>
         }
 
         function openSupport(event) {
-            event.preventDefault();
-            if (tg?.openTelegramLink) {
-                tg.openTelegramLink('https://t.me/Pooriya_Tgh');
-            } else {
-                window.open('https://t.me/Pooriya_Tgh', '_blank', 'noopener');
-            }
-        }
+      <a
+    href="https://t.me/Pooriya_Tgh"
+    class="nav-link"
+    onclick="openSupport(event)"
+    aria-label="گفت‌وگو با @Pooriya_Tgh در تلگرام"
+>
+    <i class="fas fa-headset"></i>
+    <span>@Pooriya_Tgh</span>
+</a>
+
 
         async function loadProfile() {
             const ordersElement = document.getElementById('profile-orders');
@@ -503,7 +505,7 @@ html = r'''<!DOCTYPE html>
                 return;
             }
 
-            if (!PROFILE_API_BASE || PROFILE_API_BASE.includes('YOUR_BACKEND_URL')) {
+            if (!PROFILE_API_BASE) {
                 ordersElement.textContent =
                     'تاریخچهٔ خرید پس از اتصال سرور فروشگاه نمایش داده می‌شود.';
                 pointsElement.textContent = 'در انتظار تعیین';
@@ -514,7 +516,7 @@ html = r'''<!DOCTYPE html>
                 const response = await fetch(
                     PROFILE_API_BASE.replace(/\/$/, '') + '/api/profile',
                     {
-                        headers: { Authorization: `tma ${tg.initData}` },
+                        headers: { Authorization: 'tma ' + tg.initData },
                         cache: 'no-store'
                     }
                 );
@@ -577,15 +579,3 @@ html = r'''<!DOCTYPE html>
     </script>
 </body>
 </html>
-'''
-p = Path('/mnt/data/butcherist-final.html')
-p.write_text(html, encoding='utf-8')
-print(p, p.stat().st_size)
-# Verify requested patches and script syntax via Node if available.
-assert "function openSupport(event)" in html
-assert "tg.openTelegramLink('https://t.me/Pooriya_Tgh')" in html
-assert "Authorization: `tma ${tg.initData}`" in html
-assert "secret-2f7afd95" not in html
-assert "const PROFILE_API_BASE = 'https://YOUR_BACKEND_URL';" in html
-assert '<a\n    href="https://t.me/Pooriya_Tgh"' not in html
-print('Patch assertions passed; styles/products preserved in generated source.')
