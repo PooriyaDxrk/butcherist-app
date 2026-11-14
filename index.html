@@ -411,8 +411,8 @@
         <a href="#" class="nav-link" data-page="orders" onclick="navigate(event, 'orders')">
             <i class="fas fa-shapes"></i>Orders
         </a>
-        <a href="https://t.me/Pooriya_Tgh" class="nav-link" onclick="openSupport(event)" aria-label="گفت‌وگو با @Pooriya_Tgh در تلگرام">
-            <i class="fas fa-headset"></i><span>@Pooriya_Tgh</span>
+        <a href="https://t.me/Pooriya_Tgh" class="nav-link" onclick="openSupport(event)">
+            <i class="fas fa-headset"></i>Support
         </a>
         <a href="#" class="nav-link" data-page="profile" onclick="navigate(event, 'profile')">
             <i class="fas fa-user"></i>Profile
@@ -428,6 +428,7 @@
             tg.backgroundColor = '#07060b';
         }
 
+        // پس از آماده‌شدن سرور، آدرس HTTPS آن را اینجا قرار بده.
         const PROFILE_API_BASE = '';
 
         function showTelegramIdentity() {
@@ -480,11 +481,16 @@
         }
 
         function openSupport(event) {
-            if (tg?.openTelegramLink) {
-                event.preventDefault();
-                tg.openTelegramLink('https://t.me/Pooriya_Tgh');
-            }
-        }
+      <a
+    href="https://t.me/Pooriya_Tgh"
+    class="nav-link"
+    onclick="openSupport(event)"
+    aria-label="گفت‌وگو با @Pooriya_Tgh در تلگرام"
+>
+    <i class="fas fa-headset"></i>
+    <span>@Pooriya_Tgh</span>
+</a>
+
 
         async function loadProfile() {
             const ordersElement = document.getElementById('profile-orders');
